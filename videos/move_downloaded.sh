@@ -47,7 +47,7 @@ if [ "$DEBUG" = true ]; then
   fi
 fi
 
-DOWNLOAD_DIR=~/Downloads/torrent/done
+DOWNLOAD_DIR=~/Downloads/torrents/done
 DESTINATION_DIR=~/Videos
 
 VIDEO_RADIO_LIST=()
