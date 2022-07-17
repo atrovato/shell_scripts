@@ -1,5 +1,17 @@
 # My useful shell scripts
 
+## Songs
+
+### flac_splitter.sh
+
+Splits an unique FLAC file to multiple FLAC files according to playlist `*.cue` file.
+
+#### Usage
+
+```
+./flac_splitter.sh -d /path/to/flac/file -o /path/to/output
+```
+
 ## Transmission
 
 ### configure_transmission_remote.sh
