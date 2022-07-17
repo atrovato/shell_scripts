@@ -48,7 +48,7 @@ if [ "$DEBUG" = true ]; then
 fi
 
 DOWNLOAD_DIR=~/Downloads/torrents/done
-DESTINATION_DIR=~/Videos
+DESTINATION_DIR=~/Videos/
 
 VIDEO_RADIO_LIST=()
 FILES=()
@@ -127,7 +127,7 @@ list_dirs() {
 
   # Listing all dirs
   if [ "$DEBUG" = true ]; then
-    echo "Finding directories:"
+    echo "Finding directories: $DESTINATION_DIR"
   fi
 
   if [ "$1" = true ]; then
@@ -263,7 +263,7 @@ move_file() {
   fi
 
   if [ "$DRY_RUN" = false ]; then
-    mkdir -p $(basename "$DESTINATION_DIR_NAME")
+    mkdir -p "$DESTINATION_DIR_NAME"
   fi
 
   # Moving file
@@ -273,12 +273,12 @@ move_file() {
 
   if [ "$DRY_RUN" = false ]; then
     echo -n "Copying file from $SOURCE to $DESTINATION..."
-    cp -v $(basename "$DESTINATION_DIR_NAME")
+    cp -v "$SOURCE" "$DESTINATION"
     echo " done."
     if [ "$DEBUG" = true ]; then
       echo "Deleting $SOURCE"
     fi
-    rm $SOURCE
+    rm "$SOURCE"
   fi
 }
 
@@ -304,7 +304,7 @@ move_serie() {
 
   # Try another way to extract season / episode
   if [ -z "$SEASON" ]; then
-    SEASON_EPISODE=$(echo $FILE_NAME | egrep -io '^([0-9]{3})')
+    SEASON_EPISODE=$(echo $FILE_NAME | egrep -io '([0-9]{3})')
     SEASON=$(echo $SEASON_EPISODE | egrep -io '^([0-9])')
     EPISODE=$(echo $SEASON_EPISODE | egrep -io '([0-9]{2})$')
   fi
@@ -360,7 +360,7 @@ if [ "$DEBUG" = true ]; then
 fi
 
 if [ "$DRY_RUN" = false ]; then
-  find $DOWNLOAD_DIR -type d -empty -delete
+  find $DOWNLOAD_DIR -mindepth 1 -type d -empty -delete
 fi
 
 exit 0

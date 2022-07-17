@@ -43,22 +43,23 @@ if [ "$DEBUG" = true ]; then
   fi
 fi
 
-BASEDIR=$(dirname "$0")
+BASEDIR=$(pwd "$0")
 if [ "$DEBUG" = true ]; then
   echo "Working in dir $BASEDIR"
 fi
 
 # Create transmission-remote command from .netrc file
 NETRC_FILE=(pwd "$BASEDIR/.netrc")
-TRANSMISSION_REMOTE="transmission-remote --netrc $NETRC_FILE"
 
 # List all downloads
-TORRENTLIST=$($TRANSMISSION_REMOTE --list | sed -e '1d' -e '$d' | awk '{print $1}' | sed -e 's/[^0-9]*//g')
+TORRENTLIST=$(transmission-remote localhost:9091 -n 'torrent:torrent-client' --list | sed -e '1d' -e '$d' | awk '{print $1}' | sed -e 's/[^0-9]*//g')
 
 # On each downloading files
 for TORRENT_ID in $TORRENTLIST; do
+  echo $TORRENT_ID
+
   # Get torrent information
-  TORRENT_INFO=$($TRANSMISSION_REMOTE --torrent $TORRENTID --info)
+  TORRENT_INFO=$(transmission-remote localhost:9091 -n 'torrent:torrent-client' --torrent $TORRENT_ID --info)
   TORRENT_NAME=$(echo $TORRENT_INFO | sed -e 's/.*Name: \(.*\) Hash.*/\1/')
   echo -e "Processing #$TORRENT_ID - $TORRENT_NAME"
 
@@ -71,9 +72,9 @@ for TORRENT_ID in $TORRENTLIST; do
   if [ "$DL_COMPLETED" ] && [ "$STATE_STOPPED" ]; then
     echo "Torrent #$TORRENT_ID is fully downloaded."
 
-    if [ "$DRY_RUN" = true ]; then
+    if [ "$DRY_RUN" = false ]; then
       echo "Removing torrent from list."
-      $(TRANSMISSION_REMOTE --torrent $TORRENTID --remove)
+      $(transmission-remote localhost:9091 -n 'torrent:torrent-client' --torrent $TORRENT_ID --remove)
     elif [ "$DEBUG" = true ]; then
       echo "Removing torrent from list not applied in dry-run mode."
     fi
